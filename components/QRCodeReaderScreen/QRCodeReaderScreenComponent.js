@@ -1,11 +1,10 @@
 import {
   View,
-  Image,
   Button,
   Text,
   StyleSheet
 } from "react-native"
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 
@@ -42,7 +41,9 @@ function QRCodeReaderScreen({navigation}) {
   const handleBarCodeScanned = ({type, data}) => {
     setScanned(true);
     setText(data);
-    navigation.navigate('User authentication');
+    navigation.navigate('User authentication', {
+      userId: data
+    });
   }
 
   if(hasPermission == null) {
