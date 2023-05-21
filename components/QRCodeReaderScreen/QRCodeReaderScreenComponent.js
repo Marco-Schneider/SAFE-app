@@ -5,14 +5,17 @@ import {
   Text,
   StyleSheet
 } from "react-native"
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BarCodeScanner } from "expo-barcode-scanner";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+
 
 function QRCodeReaderScreen({navigation}) {
 
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [text, setText] = useState('Not yet scaneed');
+  const [text, setText] = useState('Not yet scanned');
+  const isFocused = useIsFocused();
 
   const askForCameraPermission = () => {
     (async () => {
@@ -21,14 +24,25 @@ function QRCodeReaderScreen({navigation}) {
     })()
   }
 
+  const resetScanner = () => {
+    setScanned(false);
+    setText("Not yet scanned");
+  };
+
   useEffect(() => {
     askForCameraPermission();
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      resetScanner();
+    }, [])
+  );
+
   const handleBarCodeScanned = ({type, data}) => {
     setScanned(true);
     setText(data);
-    console.log('Type: ' + type + '\nData: ' + data);
+    navigation.navigate('User authentication');
   }
 
   if(hasPermission == null) {
@@ -42,7 +56,8 @@ function QRCodeReaderScreen({navigation}) {
     return(
       <View style={styles.appContainer}>
         <Text style={{margin: 10}}>No access to camera</Text>
-        <Button title='Allow camera' onPress={() => askForCameraPermission()} />
+        <Button 
+          title='Allow camera' onPress={() => askForCameraPermission()} />
       </View>
     )
   }
@@ -55,13 +70,12 @@ function QRCodeReaderScreen({navigation}) {
         </Text>
       </View>
       <View style={styles.barCodeContainer}>
-        <BarCodeScanner
+        { isFocused ? (
+          <BarCodeScanner
           onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
           style={{height: 400, width: 400}}
-        />
+        />) : null}
       </View>
-      <Text style={styles.mainText}>{text}</Text>
-      {scanned && <Button title='Scan again?' onPress={() => setScanned(false)} color='tomato' />}
     </View>
   )
 }
