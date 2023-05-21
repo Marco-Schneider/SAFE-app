@@ -16,10 +16,16 @@ function HomeScreen({navigation}) {
       <View style={styles.mainMenu}>
         <Text style={styles.title}>S.A.F.E.</Text>
         <View style={styles.button}>
-          <Button title='Emprestar item' />
+          <Button 
+            title='Emprestar item'
+            onPress={() => navigation.navigate('QRCode reader')} 
+          />
         </View>
         <View style={styles.button}>
-          <Button title='Devolver item' />
+          <Button 
+            title='Devolver item'
+            onPress={() => navigation.navigate('QRCode reader')}
+          />
         </View>
       </View>
       <View style={styles.iconBottomRightContainer}>
