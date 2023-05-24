@@ -11,6 +11,14 @@ import {
 function UserAuthenticationScreen({navigation}) {
 
   const route = useRoute();
+  const { userInfo } = route.params;
+
+  console.log("USER INFORMATION", userInfo);
+  
+  const displayName = userInfo.fields.displayName.stringValue;
+  const email = userInfo.fields.email.stringValue;
+  const profilePicture = userInfo.fields.profilePicture.stringValue;
+  const role = userInfo.fields.role.stringValue;
 
   return (
     <View style={styles.appContainer}>
@@ -22,10 +30,10 @@ function UserAuthenticationScreen({navigation}) {
       <View style={styles.userInformationContainer}>
         <Image 
           style={{width: 150, height: 150, backgroundColor: 'green'}}
-          source={require('../../assets/images/placeholder_user_icon.png')}
+          source={{uri: profilePicture}}
         />
-        <Text style={{fontSize: 25}}> {route.params.userId} </Text>
-        <Text>Estagiário</Text>
+        <Text style={{fontSize: 25}}> { displayName } </Text>
+        <Text> { role } </Text>
       </View>
       <View style={styles.loginInformationContainer}>
         <TextInput 
