@@ -3,7 +3,8 @@ import {
   StyleSheet, 
   Text, 
   View,
-  Button 
+  Button,
+  AppRegistry
 } from 'react-native';
 import { 
   NavigationContainer
@@ -14,6 +15,7 @@ import {
 import HomeScreen from './components/HomeScreen/HomeScreenComponent';
 import QRCodeReaderScreen from './components/QRCodeReaderScreen/QRCodeReaderScreenComponent';
 import UserAuthenticationScreen from './components/UserAuthenticationScreen/UserAuthenticationScreenComponent';
+import ItemSelectionScreen from './components/ItemSelectionScreen/ItemSelectionComponent';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +26,7 @@ export default function App() {
         <Stack.Screen name="Home" component={ HomeScreen } />
         <Stack.Screen name="QRCode reader" component={ QRCodeReaderScreen } />
         <Stack.Screen name="User authentication" component={ UserAuthenticationScreen } />
+        <Stack.Screen name="Item selection" component={ ItemSelectionScreen } />
       </Stack.Navigator>
     </NavigationContainer>
   );
