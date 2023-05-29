@@ -38,12 +38,34 @@ function QRCodeReaderScreen({navigation}) {
     }, [])
   );
 
-  const handleBarCodeScanned = ({type, data}) => {
+  const handleBarCodeScanned = async ({type, data}) => {
     setScanned(true);
     setText(data);
-    navigation.navigate('User authentication', {
-      userId: data
-    });
+    try {
+      const userInfo = await fetchItemFromDatabase(data);
+      navigation.navigate('User authentication', {
+        userInfo: userInfo
+      });
+    }
+    catch(error) {
+      console.log("Error fetching item", error);
+    }
+  }
+
+  const fetchItemFromDatabase = async (itemId) => {
+    try {
+      const response = await fetch(`https://firestore.googleapis.com/v1/projects/safe-auth-a2ae0/databases/(default)/documents/users/${itemId}`);
+      if(response.ok) {
+        const itemData = await response.json();
+        return itemData;
+      } else {
+        console.log("Error, item not found!");
+      }
+    }
+    catch(error) {
+      console.log("Error fetching item: ", error);
+      throw error;
+    }
   }
 
   if(hasPermission == null) {

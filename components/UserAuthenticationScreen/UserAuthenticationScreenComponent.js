@@ -7,10 +7,40 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native"
+import { auth } from "../../firebase"
+import { useState, useEffect } from "react";
 
 function UserAuthenticationScreen({navigation}) {
 
   const route = useRoute();
+  const { userInfo } = route.params;
+
+  const [password, setPassword] = useState('');
+  
+  const displayName = userInfo.fields.displayName.stringValue;
+  const email = userInfo.fields.email.stringValue;
+  const profilePicture = userInfo.fields.profilePicture.stringValue;
+  const role = userInfo.fields.role.stringValue;
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if(user) {
+        navigation.navigate('Item selection');
+      }
+    })
+    return unsubscribe;
+  }, [])
+
+  const handleLogin = () => {
+    console.log("CLICKED TO LOGIN!!");
+    auth
+    .signInWithEmailAndPassword(email, password)
+    .then(userCredentials => {
+      const user = userCredentials.user;
+      console.log('Logged in with: ', user.email);
+    })
+    .catch(error => alert(error.message))
+  }
 
   return (
     <View style={styles.appContainer}>
@@ -22,20 +52,25 @@ function UserAuthenticationScreen({navigation}) {
       <View style={styles.userInformationContainer}>
         <Image 
           style={{width: 150, height: 150, backgroundColor: 'green'}}
-          source={require('../../assets/images/placeholder_user_icon.png')}
+          source={{uri: profilePicture}}
         />
-        <Text style={{fontSize: 25}}> {route.params.userId} </Text>
-        <Text>Estagiário</Text>
+        <Text style={{fontSize: 25}}> { displayName } </Text>
+        <Text> { role } </Text>
       </View>
       <View style={styles.loginInformationContainer}>
         <TextInput 
           style={styles.passwordInputContainer}
           placeholder='senha'
+          value={password}
+          onChangeText={password => setPassword(password)}
         />
         <View
           style={{marginTop: 20}}
         >
-          <Button title='Confirmar' />
+          <Button 
+            title='Confirmar'
+            onPress={handleLogin} 
+          />
         </View>
       </View>
     </View>
