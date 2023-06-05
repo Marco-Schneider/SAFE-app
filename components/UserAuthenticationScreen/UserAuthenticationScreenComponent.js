@@ -62,6 +62,7 @@ function UserAuthenticationScreen({navigation}) {
           style={styles.passwordInputContainer}
           placeholder='senha'
           value={password}
+          secureTextEntry={true}
           onChangeText={password => setPassword(password)}
         />
         <View
