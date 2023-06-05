@@ -26,7 +26,7 @@ export default function App() {
         <Stack.Screen name="Home" component={ HomeScreen } />
         <Stack.Screen name="QRCode reader" component={ QRCodeReaderScreen } />
         <Stack.Screen name="User authentication" component={ UserAuthenticationScreen } />
-        <Stack.Screen name="Item selection" component={ ItemSelectionScreen } />
+        <Stack.Screen options={{ headerTitle: '', headerBackVisible: false }} name="Item selection" component={ ItemSelectionScreen } />
       </Stack.Navigator>
     </NavigationContainer>
   );
