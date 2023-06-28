@@ -5,16 +5,19 @@ import {
   Button,
   Text,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native"
+
+import { useIsFocused } from '@react-navigation/native'
 
 function ItemSelectionScreen({navigation}) {
 
   const [items, setItems] = useState([]);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     fetchItemsFromDatabase();
-  }, []);
+  }, [isFocused]);
 
   const fetchItemsFromDatabase = async () => {
     try {

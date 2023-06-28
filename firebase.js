@@ -20,8 +20,10 @@ if(firebase.apps.length === 0) {
   let app = firebase.initializeApp(firebaseConfig);
 } else {
   app = firebase.app();
+  let firestore = firestore();
 }
 
 const auth = firebase.auth();
+const firestore = firebase.firestore();
 
-export { auth };
+export { auth, firestore };

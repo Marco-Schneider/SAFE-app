@@ -8,18 +8,85 @@ import {
   StyleSheet,
   TouchableOpacity
 } from "react-native"
+import firestore from '@react-native-firebase/firestore';
 
 function WaitingScreen({navigation}) {
 
   const route = useRoute();
   const { selectedItems } = route.params;
-  const indicator = false;
+  const [indicator, setIndicator] = useState(false);
+  var intialSafeState = "";
 
   useEffect(() => {
     console.log("THE USER SELECTED THE FOLLOWING ITEMS: ", selectedItems);
+    getInitialSafeState();
     handleUpdateAvailability();
     handleOpeningOfCabinet();
+
+    const interval = setInterval(() => {
+      getUpdatedSafeState();
+    }, 2000);
+
+    return () => clearInterval(interval);
+
   }, [])
+
+  const getInitialSafeState = async () => {
+    try {
+      const response = await fetch('https://firestore.googleapis.com/v1/projects/safe-auth-a2ae0/databases/(default)/documents/safe');
+
+      if(response.ok) {
+        const data = await response.json();
+        const itemData = data.documents.map((doc) => ({
+          name: doc.name.split('/').pop(),
+          ...doc.fields,
+        }));
+
+        if(itemData.length > 0) {
+          const value = itemData[0].status.stringValue;
+          intialSafeState = value;
+        }
+      } 
+      else {
+        console.log('Items not found!');
+      }
+    } 
+    catch (error) {
+      console.log('Error gathering items:', error);
+    }
+  }
+
+  const getUpdatedSafeState = async () => {
+    try {
+      const response = await fetch('https://firestore.googleapis.com/v1/projects/safe-auth-a2ae0/databases/(default)/documents/safe');
+
+      if (response.ok) {
+        const data = await response.json();
+        const itemData = data.documents.map((doc) => ({
+          name: doc.name.split('/').pop(),
+          ...doc.fields,
+        }));
+
+        if (itemData.length > 0) {
+          const value = itemData[0].status.stringValue;
+          console.log("Value: ", value);
+          console.log("initial", intialSafeState);
+          if(value == "itemRetrieval" && intialSafeState == "Closed") {
+            intialSafeState = "itemRetrieval";
+          }
+          if (value != intialSafeState && value == "Closed") {
+            intialSafeState = value;
+            setIndicator(true);
+            console.log('State has changed:', value);
+          }
+        }
+      } else {
+        console.log('Items not found!');
+      }
+    } catch (error) {
+      console.log('Error gathering items:', error);
+    }
+  };
 
   const handleUpdateAvailability = async () => {
     try {
@@ -98,19 +165,31 @@ function WaitingScreen({navigation}) {
     }
   };
 
+  const handleYesButtonPress = () => {
+    navigation.goBack();
+  };
+
+  const handleNoButtonPress = () => {
+    navigation.popToTop();
+  };
+
   return (
     <View style={styles.appContainer}>
       <View style={styles.textContainer}>
-        <Text style={styles.text}>Por favor, retire os itens confome indicado painel do SAFE</Text>
+        { !indicator && (
+          <Text style={styles.text}>Por favor, retire os itens confome indicado painel do SAFE</Text>
+        )}
         { indicator && (
           <View>
             <Text style={styles.text}>Gostaria de retirar mais items?</Text>
             <View style={styles.buttonsContainer}>
               <Button 
                 title='Sim'
+                onPress={handleYesButtonPress}
               />
               <Button 
                 title='Não'
+                onPress={handleNoButtonPress}
               />
             </View>
           </View>
