@@ -79,10 +79,27 @@ function ItemSelectionScreen({navigation}) {
             ]}
             onPress={() => handleItemPress(item)}
           >
-            <Image
-              source={{ uri: item.image.stringValue }}
-              style={styles.itemImage}
-            />
+            {item.image && (
+              <Image
+                style={styles.itemImage}
+                source={{ uri: item.image.stringValue }}
+              />
+            )}
+            <View style={{ width: "100%", textAlign: 'center' }}>
+              <Text style={{ textAlign: 'center' }}>{item.name.stringValue}</Text>
+              <View
+                style={[
+                  styles.itemStatus,
+                  item.isAvailable.booleanValue
+                    ? styles.itemAvailable
+                    : styles.itemUnavailable,
+                ]}
+              >
+                <Text style={styles.itemStatusText}>
+                  {item.isAvailable.booleanValue ? 'Disponível' : 'Indisponível'}
+                </Text>
+              </View>
+            </View>
           </TouchableOpacity>
           )
         )}
@@ -178,7 +195,6 @@ const styles = StyleSheet.create({
     marginRight: 35,
     marginBottom: 50
   }
-
 })
 
 export default ItemSelectionScreen;
