@@ -100,7 +100,7 @@ function WaitingScreen({navigation}) {
       console.log("UpdatedItems ",updatedItems)
 
       const updateRequests = updatedItems.map((item) => {
-        const documentName = `projects/safe-auth-a2ae0/databases/(default)/documents/tools/${item.name}`;
+        const documentName = `projects/safe-auth-v2/databases/(default)/documents/tools/${item.name}`;
         console.log("mapping", item);
         return fetch(`https://firestore.googleapis.com/v1/${documentName}`, {
           method: 'PATCH',
