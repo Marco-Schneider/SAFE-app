@@ -34,7 +34,9 @@ function UserAuthenticationScreen({navigation}) {
         );
       }
       else if(user && operation == 'returnItems') {
-        
+        navigation.navigate('Return items', 
+          { userId: userId }
+        );
       }
     })
     return unsubscribe;
