@@ -8,16 +8,18 @@ import {
   TouchableOpacity,
 } from "react-native"
 
-import { useIsFocused } from '@react-navigation/native'
+import { useIsFocused, useRoute } from '@react-navigation/native'
 
 function ItemSelectionScreen({navigation}) {
+
+  const route = useRoute();
+  const { userId } = route.params;
 
   const [items, setItems] = useState([]);
   const isFocused = useIsFocused();
 
   useEffect(() => {
     fetchItemsFromDatabase();
-    console.log("items", items);
   }, [isFocused]);
 
   const fetchItemsFromDatabase = async () => {
@@ -29,7 +31,6 @@ function ItemSelectionScreen({navigation}) {
           name: doc.name.split('/').pop(),
           ...doc.fields,
         }));
-        console.log("itemsData", itemData);
         setItems(itemData);
       } else {
         console.log('Error: Items not found!');
@@ -57,9 +58,10 @@ function ItemSelectionScreen({navigation}) {
 
   const handleConfirmationButtonPress = () => {
     const selectedItems = items.filter((item) => item.isSelected);
-    console.log("Selected Items:", selectedItems);
+    console.log("SELECTION SCREEN - Selected Items:", selectedItems);
     navigation.navigate('Waiting screen', {
-      selectedItems: selectedItems
+      selectedItems: selectedItems,
+      userId: userId
     });
   };
 

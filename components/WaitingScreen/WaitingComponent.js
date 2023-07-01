@@ -14,6 +14,8 @@ function WaitingScreen({navigation}) {
 
   const route = useRoute();
   const { selectedItems } = route.params;
+  const { userId } = route.params;
+
   const [indicator, setIndicator] = useState(false);
   var intialSafeState = "";
 
@@ -25,7 +27,7 @@ function WaitingScreen({navigation}) {
 
     const interval = setInterval(() => {
       getUpdatedSafeState();
-    }, 2000);
+    }, 20000);
 
     return () => clearInterval(interval);
 
@@ -33,7 +35,7 @@ function WaitingScreen({navigation}) {
 
   const getInitialSafeState = async () => {
     try {
-      const response = await fetch('https://firestore.googleapis.com/v1/projects/safe-auth-a2ae0/databases/(default)/documents/safe');
+      const response = await fetch('https://firestore.googleapis.com/v1/projects/safe-auth-v2/databases/(default)/documents/safe');
 
       if(response.ok) {
         const data = await response.json();
@@ -58,7 +60,7 @@ function WaitingScreen({navigation}) {
 
   const getUpdatedSafeState = async () => {
     try {
-      const response = await fetch('https://firestore.googleapis.com/v1/projects/safe-auth-a2ae0/databases/(default)/documents/safe');
+      const response = await fetch('https://firestore.googleapis.com/v1/projects/safe-auth-v2/databases/(default)/documents/safe');
 
       if (response.ok) {
         const data = await response.json();
@@ -101,6 +103,7 @@ function WaitingScreen({navigation}) {
 
       const updateRequests = updatedItems.map((item) => {
         const documentName = `projects/safe-auth-v2/databases/(default)/documents/tools/${item.name}`;
+        console.log("documentName", documentName);
         console.log("mapping", item);
         return fetch(`https://firestore.googleapis.com/v1/${documentName}`, {
           method: 'PATCH',
@@ -112,7 +115,7 @@ function WaitingScreen({navigation}) {
               isAvailable: item.isAvailable,
               image: item.image,
               location: item.location,
-              toolName: item.toolName
+              wasLentTo: userId
             },
           }),
         });
@@ -123,6 +126,9 @@ function WaitingScreen({navigation}) {
       for (const response of updateResponses) {
         if (!response.ok) {
           console.log('Error updating item:', response.status);
+        }
+        else {
+          console.log('Item successfully updated!', response.status);
         }
       }
     } catch (error) {
