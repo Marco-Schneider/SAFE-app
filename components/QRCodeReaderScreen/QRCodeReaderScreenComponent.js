@@ -54,7 +54,7 @@ function QRCodeReaderScreen({navigation}) {
 
   const fetchItemFromDatabase = async (itemId) => {
     try {
-      const response = await fetch(`https://firestore.googleapis.com/v1/projects/safe-auth-a2ae0/databases/(default)/documents/users/${itemId}`);
+      const response = await fetch(`https://firestore.googleapis.com/v1/projects/safe-auth-v2/databases/(default)/documents/users/${itemId}`);
       if(response.ok) {
         const itemData = await response.json();
         return itemData;

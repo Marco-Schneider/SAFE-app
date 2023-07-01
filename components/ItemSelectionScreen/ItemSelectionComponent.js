@@ -21,7 +21,7 @@ function ItemSelectionScreen({navigation}) {
 
   const fetchItemsFromDatabase = async () => {
     try {
-      const response = await fetch('https://firestore.googleapis.com/v1/projects/safe-auth-a2ae0/databases/(default)/documents/tools');
+      const response = await fetch('https://firestore.googleapis.com/v1/projects/safe-auth-v2/databases/(default)/documents/tools');
       if (response.ok) {
         const data = await response.json();
         const itemData = data.documents.map((doc) => ({
