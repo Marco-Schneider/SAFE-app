@@ -27,7 +27,7 @@ function WaitingScreen({navigation}) {
 
     const interval = setInterval(() => {
       getUpdatedSafeState();
-    }, 20000);
+    }, 5000);
 
     return () => clearInterval(interval);
 
@@ -96,6 +96,9 @@ function WaitingScreen({navigation}) {
         ...item,
         isAvailable: {
           booleanValue: false
+        },
+        wasLentTo: {
+          stringValue: userId
         }
       }));
 
@@ -114,8 +117,9 @@ function WaitingScreen({navigation}) {
             fields: {
               isAvailable: item.isAvailable,
               image: item.image,
+              toolName: item.toolName,
               location: item.location,
-              wasLentTo: userId
+              wasLentTo: item.wasLentTo
             },
           }),
         });
