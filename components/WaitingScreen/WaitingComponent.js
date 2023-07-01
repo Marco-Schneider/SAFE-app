@@ -111,7 +111,8 @@ function WaitingScreen({navigation}) {
             fields: {
               isAvailable: item.isAvailable,
               image: item.image,
-              location: item.location
+              location: item.location,
+              toolName: item.toolName
             },
           }),
         });

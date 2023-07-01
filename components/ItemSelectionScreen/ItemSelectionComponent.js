@@ -29,6 +29,7 @@ function ItemSelectionScreen({navigation}) {
           name: doc.name.split('/').pop(),
           ...doc.fields,
         }));
+        console.log("itemsData", itemData);
         setItems(itemData);
       } else {
         console.log('Error: Items not found!');
@@ -72,7 +73,7 @@ function ItemSelectionScreen({navigation}) {
       <View style={styles.mainItemContainer}>
         {items.map((item) => (
           <TouchableOpacity
-            key={item.location.integerValue}
+            key={item.name}
             style={[
               styles.itemContainer,
               item.isSelected && styles.itemSelected,
@@ -86,7 +87,7 @@ function ItemSelectionScreen({navigation}) {
               />
             )}
             <View style={{ width: "100%", textAlign: 'center' }}>
-              <Text style={{ textAlign: 'center' }}>{item.name.stringValue}</Text>
+              <Text style={{ textAlign: 'center' }}>{item.toolName?.stringValue}</Text>
               <View
                 style={[
                   styles.itemStatus,
