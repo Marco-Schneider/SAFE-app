@@ -14,6 +14,7 @@ function UserAuthenticationScreen({navigation}) {
 
   const route = useRoute();
   const { userInfo } = route.params;
+  const { operation } = route.params;
 
   const [password, setPassword] = useState('');
   
@@ -22,10 +23,18 @@ function UserAuthenticationScreen({navigation}) {
   const profilePicture = userInfo.fields.profilePicture.stringValue;
   const role = userInfo.fields.role.stringValue;
 
+  const userIdParser = (userInfo.name).split('/');
+  const userId = userIdParser[userIdParser.length - 1];
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
-      if(user) {
-        navigation.navigate('Item selection');
+      if(user && operation == 'retrieveItems') {
+        navigation.navigate('Item selection', 
+          { userId: userId }
+        );
+      }
+      else if(user && operation == 'returnItems') {
+        
       }
     })
     return unsubscribe;

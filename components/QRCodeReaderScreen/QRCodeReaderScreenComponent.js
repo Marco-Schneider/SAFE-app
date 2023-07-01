@@ -6,10 +6,13 @@ import {
 } from "react-native"
 import React, { useState, useEffect } from "react";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused, useRoute } from "@react-navigation/native";
 
 
 function QRCodeReaderScreen({navigation}) {
+
+  const route = useRoute();
+  const { operation } = route.params;
 
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -44,7 +47,8 @@ function QRCodeReaderScreen({navigation}) {
     try {
       const userInfo = await fetchItemFromDatabase(data);
       navigation.navigate('User authentication', {
-        userInfo: userInfo
+        userInfo: userInfo,
+        operation: operation
       });
     }
     catch(error) {
