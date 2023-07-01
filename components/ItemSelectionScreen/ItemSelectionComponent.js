@@ -17,6 +17,7 @@ function ItemSelectionScreen({navigation}) {
 
   useEffect(() => {
     fetchItemsFromDatabase();
+    console.log("items", items);
   }, [isFocused]);
 
   const fetchItemsFromDatabase = async () => {
@@ -71,37 +72,20 @@ function ItemSelectionScreen({navigation}) {
       <View style={styles.mainItemContainer}>
         {items.map((item) => (
           <TouchableOpacity
-            key={item.name}
+            key={item.location.integerValue}
             style={[
               styles.itemContainer,
-              item.isAvailable.booleanValue && styles.itemContainerAvailable,
-              item.isSelected ? styles.itemSelected : null,
+              item.isSelected && styles.itemSelected,
             ]}
             onPress={() => handleItemPress(item)}
           >
-            {item.image && (
-              <Image
-                style={styles.itemImage}
-                source={{ uri: item.image.stringValue }}
-              />
-            )}
-            <View style={{ width: "100%", textAlign: 'center' }}>
-              <Text style={{ textAlign: 'center' }}>{item.name}</Text>
-              <View
-                style={[
-                  styles.itemStatus,
-                  item.isAvailable.booleanValue
-                    ? styles.itemAvailable
-                    : styles.itemUnavailable,
-                ]}
-              >
-                <Text style={styles.itemStatusText}>
-                  {item.isAvailable.booleanValue ? 'Disponível' : 'Indisponível'}
-                </Text>
-              </View>
-            </View>
+            <Image
+              source={{ uri: item.image.stringValue }}
+              style={styles.itemImage}
+            />
           </TouchableOpacity>
-        ))}
+          )
+        )}
       </View>
       <View style={styles.bottomMenu}>
         <View style={styles.confirmationButton}>
