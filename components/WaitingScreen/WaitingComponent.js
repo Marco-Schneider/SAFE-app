@@ -253,12 +253,30 @@ function WaitingScreen({navigation}) {
   return (
     <View style={styles.appContainer}>
       <View style={styles.textContainer}>
-        { !indicator && (
+        { !indicator && (operation == "retrieveItems") && (
           <Text style={styles.text}>Por favor, retire os itens confome indicado painel do SAFE</Text>
         )}
-        { indicator && (
+        { indicator && (operation == "retrieveItems") && (
           <View>
             <Text style={styles.text}>Gostaria de retirar mais items?</Text>
+            <View style={styles.buttonsContainer}>
+              <Button 
+                title='Sim'
+                onPress={handleYesButtonPress}
+              />
+              <Button 
+                title='Não'
+                onPress={handleNoButtonPress}
+              />
+            </View>
+          </View>
+        )}
+        { !indicator && (operation == "returnItems") && (
+          <Text style={styles.text}>Por favor, devolva os itens confome indicado painel do SAFE</Text>
+        )}
+        { indicator && (operation == "returnItems") && (
+          <View>
+            <Text style={styles.text}>Gostaria de devolver mais items?</Text>
             <View style={styles.buttonsContainer}>
               <Button 
                 title='Sim'
