@@ -14,6 +14,7 @@ function ReturnItemSelectionScreen({navigation}) {
 
   const route = useRoute();
   const { userId } = route.params;
+  const { operation } = route.params;
 
   const [items, setItems] = useState([]);
   const [userItems, setUserItems] = useState([]);
@@ -72,11 +73,12 @@ function ReturnItemSelectionScreen({navigation}) {
 
   const handleConfirmationButtonPress = () => {
     const selectedItems = userItems.filter((item) => item.isSelected);
-    console.log("SELECTION SCREEN - Selected Items:", selectedItems);
-    // navigation.navigate('Waiting screen', {
-    //   selectedItems: selectedItems,
-    //   userId: userId
-    // });
+    console.log("RETURN ITEMS SELECTION SCREEN - Selected Items:", selectedItems);
+    navigation.navigate('Waiting screen', {
+      operation: operation,
+      selectedItems: selectedItems,
+      userId: userId
+    });
   };
 
   return (

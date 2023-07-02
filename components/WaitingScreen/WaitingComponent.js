@@ -15,6 +15,7 @@ function WaitingScreen({navigation}) {
   const route = useRoute();
   const { selectedItems } = route.params;
   const { userId } = route.params;
+  const { operation } = route.params;
 
   const [indicator, setIndicator] = useState(false);
   var intialSafeState = "";
@@ -92,38 +93,74 @@ function WaitingScreen({navigation}) {
 
   const handleUpdateAvailability = async () => {
     try {
-      const updatedItems = selectedItems.map((item) => ({
-        ...item,
-        isAvailable: {
-          booleanValue: false
-        },
-        wasLentTo: {
-          stringValue: userId
-        }
-      }));
-
-      console.log("UpdatedItems ",updatedItems)
-
-      const updateRequests = updatedItems.map((item) => {
-        const documentName = `projects/safe-auth-v2/databases/(default)/documents/tools/${item.name}`;
-        console.log("documentName", documentName);
-        console.log("mapping", item);
-        return fetch(`https://firestore.googleapis.com/v1/${documentName}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
+      if(operation == "retrieveItems") {
+        const updatedItems = selectedItems.map((item) => ({
+          ...item,
+          isAvailable: {
+            booleanValue: false
           },
-          body: JSON.stringify({
-            fields: {
-              isAvailable: item.isAvailable,
-              image: item.image,
-              toolName: item.toolName,
-              location: item.location,
-              wasLentTo: item.wasLentTo
+          wasLentTo: {
+            stringValue: userId
+          }
+        }));
+  
+        console.log("UpdatedItems ",updatedItems)
+  
+        const updateRequests = updatedItems.map((item) => {
+          const documentName = `projects/safe-auth-v2/databases/(default)/documents/tools/${item.name}`;
+          console.log("documentName", documentName);
+          console.log("mapping", item);
+          return fetch(`https://firestore.googleapis.com/v1/${documentName}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
             },
-          }),
+            body: JSON.stringify({
+              fields: {
+                isAvailable: item.isAvailable,
+                image: item.image,
+                toolName: item.toolName,
+                location: item.location,
+                wasLentTo: item.wasLentTo
+              },
+            }),
+          });
         });
-      });
+      }
+      else if(operation == "returnItems") {
+        const updatedItems = selectedItems.map((item) => ({
+          ...item,
+          isAvailable: {
+            booleanValue: true
+          },
+          wasLentTo: {
+            stringValue: ""
+          }
+        }));
+  
+        console.log("UpdatedItems ",updatedItems)
+  
+        const updateRequests = updatedItems.map((item) => {
+          const documentName = `projects/safe-auth-v2/databases/(default)/documents/tools/${item.name}`;
+          console.log("documentName", documentName);
+          console.log("mapping", item);
+          return fetch(`https://firestore.googleapis.com/v1/${documentName}`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              fields: {
+                isAvailable: item.isAvailable,
+                image: item.image,
+                toolName: item.toolName,
+                location: item.location,
+                wasLentTo: item.wasLentTo
+              },
+            }),
+          });
+        });
+      }
   
       const updateResponses = await Promise.all(updateRequests);
   
@@ -153,22 +190,42 @@ function WaitingScreen({navigation}) {
 
     console.log("Doors to be opened: ", doorsToBeOpened)
 
-    try {      
-      const response = await fetch('http://192.168.0.12/control/retrieve', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(doorsToBeOpened)
-      });
-  
-      if (response.ok) {
-        const responseData = await response.text();
-        console.log('Response:', responseData);
-      } else {
-        const errorBody = await response.text();
-        console.log('Error:', response.status);
-        console.log('Error body:', errorBody);
+    try {       
+      if(operation == "retrieveItems") {
+        const response = await fetch('http://192.168.0.12/control/retrieve', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(doorsToBeOpened)
+        });
+    
+        if (response.ok) {
+          const responseData = await response.text();
+          console.log('Response:', responseData);
+        } else {
+          const errorBody = await response.text();
+          console.log('Error:', response.status);
+          console.log('Error body:', errorBody);
+        }
+      }
+      else if(operation == "returnItems") {
+        const response = await fetch('http://192.168.0.12/control/return', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(doorsToBeOpened)
+        });
+    
+        if (response.ok) {
+          const responseData = await response.text();
+          console.log('Response:', responseData);
+        } else {
+          const errorBody = await response.text();
+          console.log('Error:', response.status);
+          console.log('Error body:', errorBody);
+        }
       }
     } 
     catch (error) {
