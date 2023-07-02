@@ -6,10 +6,13 @@ import {
 } from "react-native"
 import React, { useState, useEffect } from "react";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused, useRoute } from "@react-navigation/native";
 
 
 function QRCodeReaderScreen({navigation}) {
+
+  const route = useRoute();
+  const { operation } = route.params;
 
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -44,7 +47,8 @@ function QRCodeReaderScreen({navigation}) {
     try {
       const userInfo = await fetchItemFromDatabase(data);
       navigation.navigate('User authentication', {
-        userInfo: userInfo
+        userInfo: userInfo,
+        operation: operation
       });
     }
     catch(error) {
@@ -54,7 +58,7 @@ function QRCodeReaderScreen({navigation}) {
 
   const fetchItemFromDatabase = async (itemId) => {
     try {
-      const response = await fetch(`https://firestore.googleapis.com/v1/projects/safe-auth-a2ae0/databases/(default)/documents/users/${itemId}`);
+      const response = await fetch(`https://firestore.googleapis.com/v1/projects/safe-auth-v2/databases/(default)/documents/users/${itemId}`);
       if(response.ok) {
         const itemData = await response.json();
         return itemData;

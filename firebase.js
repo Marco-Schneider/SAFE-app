@@ -7,12 +7,12 @@ import 'firebase/compat/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAqoOkHLofw42ZXhGihU2eBmd9_0hK4zpM",
-  authDomain: "safe-auth-a2ae0.firebaseapp.com",
-  projectId: "safe-auth-a2ae0",
-  storageBucket: "safe-auth-a2ae0.appspot.com",
-  messagingSenderId: "614961257495",
-  appId: "1:614961257495:web:23296f6f5c692ef9815052"
+  apiKey: "AIzaSyD3R6VHtVesWQY_ca3WnaP4dBWoPGpCo7U",
+  authDomain: "safe-auth-v2.firebaseapp.com",
+  projectId: "safe-auth-v2",
+  storageBucket: "safe-auth-v2.appspot.com",
+  messagingSenderId: "1032481991995",
+  appId: "1:1032481991995:web:3d9ffca3e41da17f99db1e"
 };
 
 // Initialize Firebase
@@ -20,8 +20,10 @@ if(firebase.apps.length === 0) {
   let app = firebase.initializeApp(firebaseConfig);
 } else {
   app = firebase.app();
+  let firestore = firestore();
 }
 
 const auth = firebase.auth();
+const firestore = firebase.firestore();
 
-export { auth };
+export { auth, firestore };

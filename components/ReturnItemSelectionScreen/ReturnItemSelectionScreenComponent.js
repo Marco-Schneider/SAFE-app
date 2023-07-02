@@ -10,18 +10,24 @@ import {
 
 import { useIsFocused, useRoute } from '@react-navigation/native'
 
-function ItemSelectionScreen({navigation}) {
+function ReturnItemSelectionScreen({navigation}) {
 
   const route = useRoute();
   const { userId } = route.params;
   const { operation } = route.params;
 
   const [items, setItems] = useState([]);
+  const [userItems, setUserItems] = useState([]);
   const isFocused = useIsFocused();
 
   useEffect(() => {
     fetchItemsFromDatabase();
   }, [isFocused]);
+
+  useEffect(() => {
+    console.log("alteracoes nos items!!");
+    updateUserItems();
+  }, [items]);
 
   const fetchItemsFromDatabase = async () => {
     try {
@@ -41,11 +47,19 @@ function ItemSelectionScreen({navigation}) {
     }
   };
 
+  const updateUserItems = () => {
+    const userItems = items?.filter((item) => {
+      return item.wasLentTo?.stringValue == userId;
+    });
+    setUserItems(userItems);
+
+  }
+
   const handleItemPress = (item) => {
-    if(!item.isAvailable.booleanValue) {
+    if(item.isAvailable.booleanValue) {
       return ;
     }
-    const updatedItems = items.map((data) => {
+    const updatedItems = userItems.map((data) => {
       if(data.name == item.name) {
         return {
           ...data,
@@ -54,16 +68,16 @@ function ItemSelectionScreen({navigation}) {
       }
       return data;
     })
-    setItems(updatedItems);
+    setUserItems(updatedItems);
   };
 
   const handleConfirmationButtonPress = () => {
-    const selectedItems = items.filter((item) => item.isSelected);
-    console.log("SELECTION SCREEN - Selected Items:", selectedItems);
+    const selectedItems = userItems.filter((item) => item.isSelected);
+    console.log("RETURN ITEMS SELECTION SCREEN - Selected Items:", selectedItems);
     navigation.navigate('Waiting screen', {
+      operation: operation,
       selectedItems: selectedItems,
-      userId: userId, 
-      operation: operation
+      userId: userId
     });
   };
 
@@ -71,11 +85,11 @@ function ItemSelectionScreen({navigation}) {
     <View style={styles.appContainer}>
       <View>
         <Text style={styles.textContainer}>
-          Selecione os itens desejados
+          Selecione os itens que deseja devolver
         </Text>
       </View>
       <View style={styles.mainItemContainer}>
-        {items.map((item) => (
+        {userItems.map((item) => (
           <TouchableOpacity
             key={item.name}
             style={[
@@ -92,18 +106,6 @@ function ItemSelectionScreen({navigation}) {
             )}
             <View style={{ width: "100%", textAlign: 'center' }}>
               <Text style={{ textAlign: 'center' }}>{item.toolName?.stringValue}</Text>
-              <View
-                style={[
-                  styles.itemStatus,
-                  item.isAvailable.booleanValue
-                    ? styles.itemAvailable
-                    : styles.itemUnavailable,
-                ]}
-              >
-                <Text style={styles.itemStatusText}>
-                  {item.isAvailable.booleanValue ? 'Disponível' : 'Indisponível'}
-                </Text>
-              </View>
             </View>
           </TouchableOpacity>
           )
@@ -129,7 +131,8 @@ const styles = StyleSheet.create({
   textContainer: {
     fontSize: 25,
     marginTop: 25,
-    textAlign: 'center',
+    marginLeft: 25,
+    textAlign: 'left',
     width: 350,
   },
   mainItemContainer: {
@@ -202,4 +205,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default ItemSelectionScreen;
+export default ReturnItemSelectionScreen;

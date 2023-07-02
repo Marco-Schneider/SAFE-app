@@ -18,13 +18,17 @@ function HomeScreen({navigation}) {
         <View style={styles.button}>
           <Button 
             title='Emprestar item'
-            onPress={() => navigation.navigate('QRCode reader')} 
+            onPress={() => navigation.navigate('QRCode reader',
+              { operation: "retrieveItems" }
+            )} 
           />
         </View>
         <View style={styles.button}>
           <Button 
             title='Devolver item'
-            onPress={() => navigation.navigate('QRCode reader')}
+            onPress={() => navigation.navigate('QRCode reader',
+              { operation: "returnItems" }
+            )}
           />
         </View>
       </View>
