@@ -14,6 +14,7 @@ function ItemSelectionScreen({navigation}) {
 
   const route = useRoute();
   const { userId } = route.params;
+  const { operation } = route.params;
 
   const [items, setItems] = useState([]);
   const isFocused = useIsFocused();
@@ -61,7 +62,8 @@ function ItemSelectionScreen({navigation}) {
     console.log("SELECTION SCREEN - Selected Items:", selectedItems);
     navigation.navigate('Waiting screen', {
       selectedItems: selectedItems,
-      userId: userId
+      userId: userId, 
+      operation: operation
     });
   };
 

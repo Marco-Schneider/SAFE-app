@@ -17,6 +17,8 @@ function WaitingScreen({navigation}) {
   const { userId } = route.params;
   const { operation } = route.params;
 
+  console.log("operation: ", operation);
+
   const [indicator, setIndicator] = useState(false);
   var intialSafeState = "";
 
@@ -28,7 +30,7 @@ function WaitingScreen({navigation}) {
 
     const interval = setInterval(() => {
       getUpdatedSafeState();
-    }, 5000);
+    }, 2000);
 
     return () => clearInterval(interval);
 
@@ -77,6 +79,9 @@ function WaitingScreen({navigation}) {
           if(value == "itemRetrieval" && intialSafeState == "Closed") {
             intialSafeState = "itemRetrieval";
           }
+          if(value == "returningItems" && intialSafeState == "Closed") {
+            intialSafeState = "returningItems";
+          }
           if (value != intialSafeState && value == "Closed") {
             intialSafeState = value;
             setIndicator(true);
@@ -92,6 +97,9 @@ function WaitingScreen({navigation}) {
   };
 
   const handleUpdateAvailability = async () => {
+    console.log("operation: ");
+    console.log(operation);
+
     try {
       if(operation == "retrieveItems") {
         const updatedItems = selectedItems.map((item) => ({
@@ -104,7 +112,7 @@ function WaitingScreen({navigation}) {
           }
         }));
   
-        console.log("UpdatedItems ",updatedItems)
+        console.log("UpdatedItems ",updatedItems);
   
         const updateRequests = updatedItems.map((item) => {
           const documentName = `projects/safe-auth-v2/databases/(default)/documents/tools/${item.name}`;
@@ -192,6 +200,7 @@ function WaitingScreen({navigation}) {
 
     try {       
       if(operation == "retrieveItems") {
+        console.log("Beggining for the retrieve!!");
         const response = await fetch('http://192.168.0.12/control/retrieve', {
           method: 'POST',
           headers: {

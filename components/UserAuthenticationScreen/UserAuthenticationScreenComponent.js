@@ -29,9 +29,10 @@ function UserAuthenticationScreen({navigation}) {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if(user && operation == 'retrieveItems') {
-        navigation.navigate('Item selection', 
-          { userId: userId }
-        );
+        navigation.navigate('Item selection', { 
+          userId: userId,
+          operation: operation 
+        });
       }
       else if(user && operation == 'returnItems') {
         navigation.navigate('Return items', { 
